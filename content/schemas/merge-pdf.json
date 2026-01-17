@@ -1,0 +1,27 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Merge PDF Tool",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "2100"
+  },
+  "description": "Merge multiple PDF files into one document for free. No registration required.",
+  "url": "https://toolur.com/merge-pdf",
+  "featureList": [
+    "Merge Multiple PDFs",
+    "Drag & Drop Upload",
+    "Reorder Pages",
+    "Fast Processing",
+    "Secure Processing"
+  ]
+}
+

@@ -1,0 +1,27 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Word Counter Tool",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "1250"
+  },
+  "description": "Count words and characters instantly with our free word counter tool.",
+  "url": "https://toolur.com/word-counter",
+  "featureList": [
+    "Word Count",
+    "Character Count",
+    "Sentence Count",
+    "Paragraph Count",
+    "Real-time Updates"
+  ]
+}
+

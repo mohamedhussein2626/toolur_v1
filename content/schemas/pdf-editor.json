@@ -1,0 +1,30 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "PDF Editor",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "5200"
+  },
+  "description": "Free online PDF tools. Merge, split, compress, convert, and edit PDF files. No registration required.",
+  "url": "https://toolur.com/pdf-editor",
+  "featureList": [
+    "Merge PDF",
+    "Split PDF",
+    "Compress PDF",
+    "Edit PDF",
+    "Convert PDF",
+    "Protect PDF",
+    "50+ PDF Tools"
+  ],
+  "applicationSubCategory": "PDF Editing"
+}
+

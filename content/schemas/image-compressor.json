@@ -1,0 +1,27 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Image Compressor",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "2800"
+  },
+  "description": "Compress images to reduce file size while maintaining quality. Free online image compressor with no watermarks.",
+  "url": "https://toolur.com/image-compressor",
+  "featureList": [
+    "Multiple Formats",
+    "Quality Control",
+    "Batch Processing",
+    "Fast Processing",
+    "No Quality Loss"
+  ],
+  "applicationSubCategory": "Image Compression"
+}

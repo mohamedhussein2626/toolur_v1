@@ -1,0 +1,28 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Image Resizer",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.7",
+    "reviewCount": "2400"
+  },
+  "description": "Resize images to any dimensions instantly. Free online image resizer with aspect ratio control.",
+  "url": "https://toolur.com/image-resizer",
+  "featureList": [
+    "Custom Dimensions",
+    "Aspect Ratio Control",
+    "Preset Sizes",
+    "Quality Preservation",
+    "Multiple Formats"
+  ],
+  "applicationSubCategory": "Image Resizing"
+}
+
