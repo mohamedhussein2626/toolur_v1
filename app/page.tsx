@@ -6,14 +6,8 @@ import Navbar from '@/components/Navbar';
 import { 
   FileText, 
   Image, 
-  Edit3, 
-  Video, 
-  Folder,
   ArrowRight,
-  Search,
-  FilePlus,
-  Scissors,
-  Wand2
+  Search
 } from 'lucide-react';
 import { categoryCards, popularTools, getToolUrl, getToolsByNavCategory } from '@/lib/tools-data';
 
@@ -22,7 +16,7 @@ export default function ToolurHomepage() {
   const [activeCategory, setActiveCategory] = useState('All Tools');
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const categories = ['All Tools', 'Pdf Tools', 'Video Tools', 'Image Tools', 'Converter Tools', 'Other Tools', 'AI Write'];
+  const categories = ['All Tools', 'Pdf Tools', 'Image Tools'];
 
   // Helper function to generate tool slug from name
   const getToolSlug = (toolName: string) => {
@@ -188,8 +182,8 @@ export default function ToolurHomepage() {
           </div>
         </div>
 
-        {/* Category Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-12">
+        {/* Category Cards - PDF and Image Tools Full Width */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
           {categoryCards.map((card, idx) => {
             // Determine href based on filterKey
             let href = '#';
@@ -327,41 +321,6 @@ export default function ToolurHomepage() {
         </div>
       </section>
 
-      {/* Free Tools Section */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="mb-8">
-          <h2 className="text-4xl font-bold mb-2">Free Tools You'd Usually Pay For</h2>
-          <p className="text-gray-600">No Limits. No Sign-Up.</p>
-          <p className="text-gray-600">Here's our featured tools</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { title: 'PDF Creator', desc: 'Create PDF quickly and easily with our free PDF creator', img: 'bg-blue-100', href: '/pdf-editor', icon: FilePlus },
-            { title: 'Background Remover', desc: 'Easily remove the background from an image at a photo', img: 'bg-purple-100', href: '/image-editor', icon: Scissors },
-            { title: 'Photo Cleanup', desc: 'Easily clean unwanted objects, items, people from an image', img: 'bg-green-100', href: '/image-editor', icon: Wand2 }
-          ].map((item, idx) => {
-            const IconComponent = item.icon;
-            return (
-              <Link key={idx} href={item.href} className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow block">
-                <div className={`${item.img} h-64 flex items-center justify-center`}>
-                  <div className="bg-white p-6 rounded-lg shadow-lg">
-                    <IconComponent className="w-20 h-20 text-gray-700" />
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="font-bold text-xl mb-2">{item.title}</h3>
-                  <p className="text-gray-600 mb-4">{item.desc}</p>
-                  <div className="text-blue-500 font-medium flex items-center space-x-2 hover:space-x-3 transition-all">
-                    <span>Learn more</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
 
       {/* Premium Section */}
       <section className="bg-blue-600 text-white py-20">
@@ -430,20 +389,21 @@ export default function ToolurHomepage() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Tools</h4>
+              <h4 className="font-semibold mb-4">Image Tools</h4>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href={getToolUrl('Essay Writer', 'AI Write')} className="hover:text-blue-600">Essay Writer</Link></li>
-                <li><Link href={getToolUrl('Content Improver', 'AI Write')} className="hover:text-blue-600">Content Improver</Link></li>
-                <li><Link href={getToolUrl('Paragraph Writer', 'AI Write')} className="hover:text-blue-600">Paragraph AI Writer</Link></li>
-                <li><Link href={getToolUrl('AI Image Generator', 'Image Tools')} className="hover:text-blue-600">AI Image Generator</Link></li>
+                <li><Link href={getToolUrl('Compress Image', 'Image Tools')} className="hover:text-blue-600">Compress Image</Link></li>
+                <li><Link href={getToolUrl('Resize Image', 'Image Tools')} className="hover:text-blue-600">Resize Image</Link></li>
+                <li><Link href={getToolUrl('Crop Image', 'Image Tools')} className="hover:text-blue-600">Crop Image</Link></li>
+                <li><Link href={getToolUrl('JPG to Word', 'Image Tools')} className="hover:text-blue-600">JPG to Word</Link></li>
               </ul>
             </div>
             <div>
+              <h4 className="font-semibold mb-4">PDF Tools</h4>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href={getToolUrl('Remove Background', 'Image Tools')} className="hover:text-blue-600">Remove Background from Image</Link></li>
-                <li><Link href={getToolUrl('Upscale Image', 'Image Tools')} className="hover:text-blue-600">Upscale Image</Link></li>
                 <li><Link href={getToolUrl('Compress PDF', 'Pdf Tools')} className="hover:text-blue-600">Compress PDF</Link></li>
-                <li><Link href={getToolUrl('JPG to PDF', 'Image Tools')} className="hover:text-blue-600">JPG to PDF</Link></li>
+                <li><Link href={getToolUrl('Split PDF', 'Pdf Tools')} className="hover:text-blue-600">Split PDF</Link></li>
+                <li><Link href={getToolUrl('PDF to Word', 'Pdf Tools')} className="hover:text-blue-600">PDF to Word</Link></li>
+                <li><Link href={getToolUrl('Word to PDF', 'Pdf Tools')} className="hover:text-blue-600">Word to PDF</Link></li>
               </ul>
             </div>
           </div>

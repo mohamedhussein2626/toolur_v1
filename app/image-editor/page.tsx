@@ -1,14 +1,12 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Breadcrumb from '@/components/Breadcrumb';
+import ImageToolsGrid from '@/components/ImageToolsGrid';
 import { getToolBySlug } from '@/lib/mdx';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import { 
-  Upload, 
-  Settings, 
   CheckCircle, 
-  Download,
   Shield,
   Clock,
   Repeat,
@@ -49,8 +47,8 @@ export default async function ImageEditor() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{frontmatter.title}</h1>
-          <p className="text-gray-600">{frontmatter.description}</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">{frontmatter.title}</h1>
+          <p className="text-gray-600 text-lg">{frontmatter.description}</p>
           <div className="flex items-center justify-center gap-2 mt-4">
             <div className="flex -space-x-2">
               {[1, 2, 3, 4, 5].map((i) => (
@@ -66,78 +64,8 @@ export default async function ImageEditor() {
           </div>
         </div>
 
-        {/* Converter Steps */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold">1</div>
-              <span className="font-medium text-gray-900">Select File</span>
-            </div>
-            <div className="flex-1 mx-4 border-t-2 border-gray-300" />
-            <div className="flex items-center gap-4">
-              <div className="bg-gray-200 text-gray-600 rounded-full w-10 h-10 flex items-center justify-center font-semibold">2</div>
-              <span className="text-gray-600">Choose Format</span>
-            </div>
-            <div className="flex-1 mx-4 border-t-2 border-gray-300" />
-            <div className="flex items-center gap-4">
-              <div className="bg-gray-200 text-gray-600 rounded-full w-10 h-10 flex items-center justify-center font-semibold">3</div>
-              <span className="text-gray-600">Convert</span>
-            </div>
-          </div>
-
-          {/* Upload Area */}
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
-            <Upload className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-            <p className="text-gray-600 mb-4">Click to upload or drag and drop</p>
-            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
-              Select File
-            </button>
-            <p className="text-xs text-gray-500 mt-3">🔒 Your file size: ZIP file</p>
-            <p className="text-xs text-blue-600">CloudMellow AI - Scan file to detect virus and BOB</p>
-          </div>
-
-          {/* Features */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-6 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span>256-bit SSL encrypted</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-blue-500" />
-              <span>No size limits</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-purple-500" />
-              <span>Fastest tool download</span>
-            </div>
-          </div>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500 flex items-center justify-center gap-2">
-              <Shield className="w-4 h-4" />
-              Your files are safe, Learn how
-            </p>
-          </div>
-        </div>
-
-        {/* Conversion Options */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <Repeat className="w-5 h-5 text-blue-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Convert from JPEG</h2>
-          </div>
-          <p className="text-gray-600 mb-6">Convert JPEG files to different formats</p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {conversionOptions.flat().map((option, index) => (
-              <button 
-                key={index}
-                className="bg-white hover:bg-gray-50 text-gray-700 px-4 py-3 rounded-lg border border-gray-200 text-sm font-medium transition-colors"
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Tools Grid with Search - Client Component */}
+        <ImageToolsGrid />
 
         {/* MDX Content Section */}
         {mdxContent && (

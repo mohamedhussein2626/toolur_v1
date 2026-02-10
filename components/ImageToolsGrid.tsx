@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
-  FileImage,
   Minimize2,
-  Scissors,
-  FileText,
+  Maximize2,
   Crop,
   FilePlus,
+  Type,
+  Hash,
   Search
 } from 'lucide-react';
 
@@ -22,37 +22,55 @@ interface Tool {
   endpoint: string;
 }
 
-export default function PDFToolsGrid() {
+export default function ImageToolsGrid() {
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Only the 6 working PDF tools
+  // Only the 5 working Image tools (removed Image Compressor)
   const tools: Tool[] = [
     {
-      icon: FileImage,
-      title: 'PDF to JPG',
-      slug: 'pdf-to-jpg',
-      description: 'Convert PDF pages to JPG images',
-      color: 'bg-blue-50',
-      iconColor: 'text-blue-500',
-      endpoint: '/api/pdf/pdf-to-jpg'
+      icon: Maximize2,
+      title: 'Resize Image',
+      slug: 'image-resizer',
+      description: 'Resize images to any dimensions',
+      color: 'bg-pink-50',
+      iconColor: 'text-pink-600',
+      endpoint: '/api/image/resize'
     },
     {
-      icon: FileText,
-      title: 'PDF to Word',
-      slug: 'pdf-to-word',
-      description: 'Convert PDF to Word document',
+      icon: Crop,
+      title: 'Crop Image',
+      slug: 'crop-image',
+      description: 'Crop images to your desired size',
       color: 'bg-green-50',
-      iconColor: 'text-green-500',
-      endpoint: '/api/pdf/pdf-to-word'
+      iconColor: 'text-green-600',
+      endpoint: '/api/image/crop'
     },
     {
       icon: FilePlus,
-      title: 'Word to PDF',
-      slug: 'word-to-pdf',
-      description: 'Convert Word documents to PDF',
-      color: 'bg-red-50',
-      iconColor: 'text-red-500',
-      endpoint: '/api/pdf/word-to-pdf'
+      title: 'JPG to Word',
+      slug: 'jpg-to-word',
+      description: 'Convert JPG images to Word documents',
+      color: 'bg-blue-50',
+      iconColor: 'text-blue-600',
+      endpoint: '/api/image/jpg-to-word'
+    },
+    {
+      icon: Type,
+      title: 'Image Text Converter',
+      slug: 'image-text-converter',
+      description: 'Extract text from images using OCR',
+      color: 'bg-indigo-50',
+      iconColor: 'text-indigo-600',
+      endpoint: '/api/image/image-text-converter'
+    },
+    {
+      icon: Hash,
+      title: 'Word Counter',
+      slug: 'word-counter',
+      description: 'Count words in image text',
+      color: 'bg-purple-50',
+      iconColor: 'text-purple-600',
+      endpoint: '/api/image/word-counter'
     }
   ];
 
@@ -74,7 +92,7 @@ export default function PDFToolsGrid() {
           <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search PDF tools"
+            placeholder="Search image tools"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-12 pr-32 py-3 border border-gray-200 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
@@ -89,10 +107,16 @@ export default function PDFToolsGrid() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
         {filteredTools.map((tool, index) => {
           const Icon = tool.icon;
+          // Map slugs to correct routes
+          const getRoute = (slug: string) => {
+            if (slug === 'image-compressor') return '/image-compressor';
+            if (slug === 'image-resizer') return '/image-resizer';
+            return `/image-editor/${slug}`;
+          };
           return (
             <Link
               key={index}
-              href={`/pdf-editor/${tool.slug}`}
+              href={getRoute(tool.slug)}
               className="bg-white rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer border border-gray-100 group"
             >
               <div className={`${tool.color} w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
@@ -107,3 +131,4 @@ export default function PDFToolsGrid() {
     </>
   );
 }
+

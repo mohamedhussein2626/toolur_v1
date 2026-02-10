@@ -1,9 +1,10 @@
+"use client";
+
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Breadcrumb from '@/components/Breadcrumb';
-import { getToolBySlug } from '@/lib/mdx';
-import { MDXRemote } from 'next-mdx-remote/rsc';
-import remarkGfm from 'remark-gfm';
+import { imageToolsApi } from '@/lib/api';
 import { 
   Upload, 
   CheckCircle, 
@@ -13,17 +14,19 @@ import {
   Globe,
   Star,
   Minimize2,
-  Repeat
+  Repeat,
+  Download,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 
-// Force dynamic rendering to enable hot reload of MDX files
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
-export default async function ImageCompressor() {
-  const tool = getToolBySlug('image-compressor');
-  const frontmatter = tool?.frontmatter || { title: 'Image Compressor', description: 'Free online image compressor', category: 'Image Tool' };
-  const mdxContent = tool?.content || '';
+export default function ImageCompressor() {
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [quality, setQuality] = useState(80);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const compressionLevels = [
     ['High Quality (90%)', 'Medium Quality (70%)', 'Low Quality (50%)', 'Custom Quality'],
@@ -53,16 +56,16 @@ export default async function ImageCompressor() {
       {/* Breadcrumb */}
       <Breadcrumb 
         items={[
-          { label: frontmatter.category, href: '/image-editor' },
-          { label: frontmatter.title }
+          { label: 'Image Tools', href: '/image-editor' },
+          { label: 'Image Compressor' }
         ]}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{frontmatter.title}</h1>
-          <p className="text-gray-600">{frontmatter.description}</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Image Compressor</h1>
+          <p className="text-gray-600">Free online image compressor</p>
           <div className="flex items-center justify-center gap-2 mt-4">
             <div className="flex -space-x-2">
               {[1, 2, 3, 4, 5].map((i) => (
@@ -101,11 +104,31 @@ export default async function ImageCompressor() {
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
             <Minimize2 className="w-12 h-12 text-blue-500 mx-auto mb-4" />
             <p className="text-gray-600 mb-4">Click to upload or drag and drop</p>
-            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const selectedFile = e.target.files?.[0];
+                if (selectedFile) {
+                  setFile(selectedFile);
+                  setError(null);
+                  setResult(null);
+                }
+              }}
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
+            >
               Select File
             </button>
-            <p className="text-xs text-gray-500 mt-3">🔒 Your file size: ZIP file</p>
-            <p className="text-xs text-blue-600">CloudMellow AI - Scan file to detect virus and BOB</p>
+            {file && (
+              <p className="text-sm text-gray-600 mt-2">
+                Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+              </p>
+            )}
           </div>
 
           {/* Features */}
@@ -140,32 +163,129 @@ export default async function ImageCompressor() {
           </div>
           <p className="text-gray-600 mb-6">Choose your preferred compression level to balance file size and quality</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {compressionLevels.flat().map((option, index) => (
-              <button 
-                key={index}
-                className="bg-white hover:bg-gray-50 text-gray-700 px-4 py-3 rounded-lg border border-gray-200 text-sm font-medium transition-colors"
-              >
-                {option}
-              </button>
-            ))}
+            {compressionLevels.flat().map((option, index) => {
+              let optionQuality = 80;
+              if (option.includes('90%')) optionQuality = 90;
+              else if (option.includes('70%')) optionQuality = 70;
+              else if (option.includes('50%')) optionQuality = 50;
+              
+              return (
+                <button 
+                  key={index}
+                  onClick={() => setQuality(optionQuality)}
+                  className={`bg-white hover:bg-gray-50 text-gray-700 px-4 py-3 rounded-lg border ${
+                    quality === optionQuality ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                  } text-sm font-medium transition-colors`}
+                >
+                  {option}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* MDX Content Section - Replaces About Section */}
-        {mdxContent && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-8">
-            <div className="prose prose-lg max-w-none">
-              <MDXRemote 
-                source={mdxContent}
-                options={{
-                  mdxOptions: {
-                    remarkPlugins: [remarkGfm],
-                  },
-                }}
-              />
+        {/* Process Button */}
+        {file && !result && (
+          <div className="text-center mb-8">
+            <button
+              onClick={async () => {
+                if (!file) return;
+                setLoading(true);
+                setError(null);
+                setResult(null);
+                try {
+                  const data = await imageToolsApi.compressImage(file, quality);
+                  setResult(data);
+                } catch (err: any) {
+                  setError(err.message || 'An error occurred while compressing the image');
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              disabled={loading}
+              className="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center gap-2 mx-auto"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Compressing...
+                </>
+              ) : (
+                'Compress Image'
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-8 flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-500" />
+            <p className="text-red-700">{error}</p>
+          </div>
+        )}
+
+        {/* Result */}
+        {result && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-green-900 mb-2">Compression Complete!</h3>
+                {result.originalSize && result.compressedSize && (
+                  <p className="text-sm text-green-700">
+                    Original: {(result.originalSize / 1024 / 1024).toFixed(2)} MB → 
+                    Compressed: {(result.compressedSize / 1024 / 1024).toFixed(2)} MB
+                    {result.compressionRatio && ` (${result.compressionRatio})`}
+                  </p>
+                )}
+              </div>
+                     <button
+                       onClick={() => {
+                         if (!result?.file) return;
+                         try {
+                           let base64Data = result.file;
+                           if (base64Data.includes(',')) {
+                             base64Data = base64Data.split(',')[1];
+                           }
+                           
+                           const binaryString = atob(base64Data);
+                           const bytes = new Uint8Array(binaryString.length);
+                           for (let i = 0; i < binaryString.length; i++) {
+                             bytes[i] = binaryString.charCodeAt(i);
+                           }
+                           
+                           const blob = new Blob([bytes], { type: 'image/jpeg' });
+                           const url = URL.createObjectURL(blob);
+                           const a = document.createElement('a');
+                           a.href = url;
+                           a.download = 'compressed-image.jpg';
+                           document.body.appendChild(a);
+                           a.click();
+                           document.body.removeChild(a);
+                           URL.revokeObjectURL(url);
+                         } catch (error) {
+                           console.error('Download error:', error);
+                           alert('Failed to download file. Please try again.');
+                         }
+                       }}
+                       className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
+                     >
+                       <Download className="w-5 h-5" />
+                       Download
+                     </button>
             </div>
           </div>
         )}
+
+        {/* Back to Tools */}
+        <div className="text-center mb-8">
+          <Link
+            href="/image-editor"
+            className="text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-2"
+          >
+            ← Back to Image Tools
+          </Link>
+        </div>
 
         {/* Benefits */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-8">

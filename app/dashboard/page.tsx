@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import AuthGuard from '@/components/AuthGuard';
+import { userAuth } from '@/lib/auth';
+import { api } from '@/lib/api';
 import { 
   RefreshCw, 
   CheckCircle, 
@@ -24,16 +27,52 @@ import {
 } from 'lucide-react';
 
 export default function DashboardPage() {
-  const [totalConversions] = useState(0);
+  const [totalConversions, setTotalConversions] = useState(0);
   const [membership] = useState('Free');
   const [availableCredits] = useState('10/10');
   const [storageUsed] = useState('0 B');
   const [storageTotal] = useState('None');
   const [trialsUsed] = useState(0);
+  const [usageStats, setUsageStats] = useState<{ toolName: string; count: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const userData = userAuth.getUserData();
+
+  useEffect(() => {
+    const fetchUsageStats = async () => {
+      if (!userData?.id) {
+        setLoading(false);
+        return;
+      }
+      
+      try {
+        setLoading(true);
+        const response = await api.getUserUsageStats();
+        // Handle the response structure from backend
+        if (response && response.totalUses !== undefined) {
+          setTotalConversions(response.totalUses || 0);
+          setUsageStats(response.toolUses?.map((item: any) => ({
+            toolName: item.toolName,
+            count: item._count?.toolName || 0
+          })) || []);
+        } else if (response.success && response.stats) {
+          setTotalConversions(response.stats.totalUsage || 0);
+          setUsageStats(response.stats.byTool || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch usage stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsageStats();
+  }, [userData?.id]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
+    <AuthGuard>
+      <div className="min-h-screen bg-gray-100">
+        <Navbar />
       
       <div className="flex">
         {/* Sidebar */}
@@ -56,25 +95,31 @@ export default function DashboardPage() {
               <span>Dashboard</span>
             </Link>
 
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-700/50 transition-colors">
-              <FileEdit className="w-5 h-5" />
-              <span>AI Writing</span>
-            </button>
+            <div className="pt-2">
+              <p className="px-4 py-2 text-xs font-semibold text-purple-200 uppercase tracking-wider mb-2">
+                PDF TOOLS
+              </p>
+              <Link
+                href="/pdf-editor"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-700/50 transition-colors"
+              >
+                <FileText className="w-5 h-5" />
+                <span>PDF Tools</span>
+              </Link>
+            </div>
 
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-700/50 transition-colors">
-              <ImageIcon className="w-5 h-5" />
-              <span>AI Image</span>
-            </button>
-
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-700/50 transition-colors">
-              <Star className="w-5 h-5" />
-              <span>Favorites</span>
-            </button>
-
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-700/50 transition-colors">
-              <Crown className="w-5 h-5" />
-              <span>Ultra Tools</span>
-            </button>
+            <div className="pt-2">
+              <p className="px-4 py-2 text-xs font-semibold text-purple-200 uppercase tracking-wider mb-2">
+                IMAGE TOOLS
+              </p>
+              <Link
+                href="/image-editor"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-700/50 transition-colors"
+              >
+                <ImageIcon className="w-5 h-5" />
+                <span>Image Tools</span>
+              </Link>
+            </div>
 
             <div className="pt-6 mt-6 border-t border-purple-500">
               <p className="px-4 py-2 text-xs font-semibold text-purple-200 uppercase tracking-wider mb-2">
@@ -103,7 +148,7 @@ export default function DashboardPage() {
         <main className="flex-1 p-8">
           {/* Welcome Section */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, User</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, {userData?.name || 'User'}</h1>
             <p className="text-gray-600">Explore your available tools and features</p>
           </div>
 
@@ -243,32 +288,59 @@ export default function DashboardPage() {
             </p>
           </div>
 
+          {/* Tool Usage Stats Section */}
+          <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Tool Usage Statistics</h2>
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <RefreshCw className="w-6 h-6 text-gray-400 animate-spin" />
+              </div>
+            ) : usageStats.length > 0 ? (
+              <div className="space-y-4">
+                {usageStats.map((stat, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900">{stat.toolName}</h3>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-purple-600">{stat.count}</p>
+                      <p className="text-xs text-gray-500">uses</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12">
+                <FileText className="w-16 h-16 text-gray-300 mb-4" />
+                <p className="text-gray-600 mb-4">You haven't used any tools yet.</p>
+                <Link 
+                  href="/" 
+                  className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
+                >
+                  Start using tools
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
+          </div>
+
           {/* Recent Conversions Section */}
           <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Conversions</h2>
-            <div className="flex flex-col items-center justify-center py-12">
-              <FileText className="w-16 h-16 text-gray-300 mb-4" />
-              <p className="text-gray-600 mb-4">You haven't converted any files yet.</p>
-              <Link 
-                href="/" 
-                className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
-              >
-                Start your first conversion
-                <ArrowRight className="w-4 h-4" />
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Available Tools</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Link href="/image-editor" className="p-4 border border-gray-200 rounded-lg hover:border-purple-500 hover:shadow-md transition-all">
+                <h3 className="font-semibold text-gray-900 mb-2">Image Tools</h3>
+                <p className="text-sm text-gray-600">Compress, Resize, Crop, and more</p>
               </Link>
-            </div>
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <Link 
-                href="/conversions" 
-                className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
-              >
-                View all conversions
-                <ArrowRight className="w-4 h-4" />
+              <Link href="/pdf-editor" className="p-4 border border-gray-200 rounded-lg hover:border-purple-500 hover:shadow-md transition-all">
+                <h3 className="font-semibold text-gray-900 mb-2">PDF Tools</h3>
+                <p className="text-sm text-gray-600">Compress, Split, Convert, and more</p>
               </Link>
             </div>
           </div>
         </main>
       </div>
     </div>
+    </AuthGuard>
   );
 }

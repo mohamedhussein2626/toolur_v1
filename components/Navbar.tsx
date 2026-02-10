@@ -1,14 +1,47 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronRight, Menu, X } from 'lucide-react';
+import { ChevronRight, Menu, X, User, LogOut, LayoutDashboard, Shield } from 'lucide-react';
 import { categoryCards, getToolsByNavCategory, getToolUrl } from '@/lib/tools-data';
+import { userAuth, adminAuth } from '@/lib/auth';
 
 export default function Navbar() {
+  const router = useRouter();
   const [hoveredNavItem, setHoveredNavItem] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileNavItem, setMobileNavItem] = useState<string | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+  const [adminData, setAdminData] = useState<any>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Update auth state on mount and when storage changes
+  useEffect(() => {
+    setIsMounted(true);
+    const checkAuth = () => {
+      setUserData(userAuth.getUserData());
+      setAdminData(adminAuth.getAdminData());
+      setIsAuthenticated(userAuth.isAuthenticated() || adminAuth.isAuthenticated());
+    };
+
+    checkAuth();
+    // Listen for storage changes (when user logs in/out in another tab)
+    window.addEventListener('storage', checkAuth);
+    return () => window.removeEventListener('storage', checkAuth);
+  }, []);
+
+  const handleLogout = () => {
+    userAuth.removeToken();
+    adminAuth.removeToken();
+    setUserData(null);
+    setAdminData(null);
+    setIsAuthenticated(false);
+    setUserMenuOpen(false);
+    router.push('/');
+  };
 
   const handleToolClick = (toolName: string) => {
     setMobileMenuOpen(false);
@@ -232,9 +265,77 @@ export default function Navbar() {
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="/login" className="hidden md:block bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md text-sm font-medium">
-            Sign In
-          </Link>
+          {/* User Menu - Desktop */}
+          {isMounted && isAuthenticated ? (
+            <div className="hidden md:block relative">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors"
+              >
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                  {userData ? userData.name.charAt(0).toUpperCase() : adminData ? adminData.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <span className="text-sm font-medium text-gray-700">
+                  {userData ? userData.name : adminData ? adminData.name : 'User'}
+                </span>
+                <ChevronRight className={`w-4 h-4 text-gray-500 transition-transform ${userMenuOpen ? 'rotate-90' : ''}`} />
+              </button>
+              
+              {/* User Dropdown Menu */}
+              {userMenuOpen && (
+                <div 
+                  className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+                  onMouseLeave={() => setUserMenuOpen(false)}
+                >
+                  <div className="py-2">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-sm font-semibold text-gray-900">
+                        {userData ? userData.name : adminData ? adminData.name : 'User'}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {userData ? userData.email : adminData ? adminData.email : ''}
+                      </p>
+                    </div>
+                    
+                    {userData && (
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    )}
+                    
+                    {adminData && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <Shield className="w-4 h-4" />
+                        <span>Admin Panel</span>
+                      </Link>
+                    )}
+                    
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : isMounted ? (
+            <Link href="/login" className="hidden md:block bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md text-sm font-medium">
+              Sign In
+            </Link>
+          ) : null}
+          
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -290,10 +391,60 @@ export default function Navbar() {
               );
             })}
 
-            {/* Mobile Sign In Button */}
-            <Link href="/login" className="w-full block bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-md text-sm font-medium mt-4 text-center">
-              Sign In
-            </Link>
+            {/* Mobile User Menu */}
+            {isMounted && isAuthenticated ? (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <div className="px-4 py-3 mb-3 bg-gray-50 rounded-lg">
+                  <p className="text-sm font-semibold text-gray-900">
+                    {userData ? userData.name : adminData ? adminData.name : 'User'}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {userData ? userData.email : adminData ? adminData.email : ''}
+                  </p>
+                </div>
+                
+                {userData && (
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
+                  >
+                    <LayoutDashboard className="w-5 h-5" />
+                    <span>Dashboard</span>
+                  </Link>
+                )}
+                
+                {adminData && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
+                  >
+                    <Shield className="w-5 h-5" />
+                    <span>Admin Panel</span>
+                  </Link>
+                )}
+                
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            ) : (
+              <Link 
+                href="/login" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full block bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-md text-sm font-medium mt-4 text-center"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       )}

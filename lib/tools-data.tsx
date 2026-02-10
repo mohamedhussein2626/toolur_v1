@@ -1,50 +1,147 @@
 import React from 'react';
 import { 
-  FileText, 
-  Image, 
-  Edit3, 
-  Video, 
-  Folder,
-  Copy,
+  Image,
+  FileText,
   Minimize2,
-  Sparkles,
-  FileImage,
-  Crop,
   Maximize2,
-  RefreshCw
+  Crop,
+  FileImage,
+  FilePlus,
+  Scissors,
+  Wand2,
+  Type,
+  Hash
 } from 'lucide-react';
 
 export const categoryCards = [
-  { title: 'PDF Tools', subtitle: 'Solve Your PDF Problems', color: 'bg-purple-500', count: '68 Tools', icon: FileText, filterKey: 'Pdf Tools' },
-  { title: 'Image Tools', subtitle: 'Solve Your Image Problems', color: 'bg-orange-500', count: '46 Tools', icon: Image, filterKey: 'Image Tools' },
-  { title: 'Video Tools', subtitle: 'Solve Your Video Needs Now', color: 'bg-pink-500', count: '23 Tools', icon: Video, filterKey: 'Video Tools' },
-  { title: 'AI Write', subtitle: 'Write Your Text Problems', color: 'bg-blue-500', count: '12 Tools', icon: Edit3, filterKey: 'AI Write' },
-  { title: 'File Tools', subtitle: 'Solve Your File Problems', color: 'bg-teal-600', count: '18 Tools', icon: Folder, filterKey: 'Other Tools' }
+  { title: 'PDF Tools', subtitle: 'Solve Your PDF Problems', color: 'bg-purple-500', count: '6 Tools', icon: FileText, filterKey: 'Pdf Tools' },
+  { title: 'Image Tools', subtitle: 'Solve Your Image Problems', color: 'bg-orange-500', count: '6 Tools', icon: Image, filterKey: 'Image Tools' }
 ];
 
+// Only the working tools from backend API
 export const popularTools = [
-  { icon: <Edit3 className="w-5 h-5" />, name: 'Essay Writer', category: 'AI Write', desc: 'Easily create an essay AI', color: 'bg-purple-100', iconColor: 'text-purple-600' },
-  { icon: <Sparkles className="w-5 h-5" />, name: 'Content Improver', category: 'AI Write', desc: 'Improve your content', color: 'bg-green-100', iconColor: 'text-green-600' },
-  { icon: <Edit3 className="w-5 h-5" />, name: 'Paragraph Writer', category: 'AI Write', desc: 'Paragraph Writer', color: 'bg-purple-100', iconColor: 'text-purple-600' },
-  { icon: <Sparkles className="w-5 h-5" />, name: 'AI Image Generator', category: 'Image Tools', desc: 'Image Generator', color: 'bg-purple-100', iconColor: 'text-purple-600' },
-  { icon: <Image className="w-5 h-5" />, name: 'Remove Background', category: 'Image Tools', desc: 'Easily Remove the Background from an Image', color: 'bg-blue-100', iconColor: 'text-blue-600' },
-  { icon: <Minimize2 className="w-5 h-5" />, name: 'Image Compressor', category: 'Image Tools', desc: 'Compress images to reduce file size', color: 'bg-orange-100', iconColor: 'text-orange-600' },
-  { icon: <Maximize2 className="w-5 h-5" />, name: 'Image Resizer', category: 'Image Tools', desc: 'Resize images to any dimensions', color: 'bg-pink-100', iconColor: 'text-pink-600' },
-  { icon: <Crop className="w-5 h-5" />, name: 'Image Cropper', category: 'Image Tools', desc: 'Crop images to your desired size', color: 'bg-green-100', iconColor: 'text-green-600' },
-  { icon: <RefreshCw className="w-5 h-5" />, name: 'Image Converter', category: 'Image Tools', desc: 'Convert images between different formats', color: 'bg-indigo-100', iconColor: 'text-indigo-600' },
-  { icon: <Copy className="w-5 h-5" />, name: 'Merge PDF', category: 'Pdf Tools', desc: 'Merge 2 or more PDF files into 1', color: 'bg-orange-100', iconColor: 'text-orange-600' },
-  { icon: <FileText className="w-5 h-5" />, name: 'Edit PDF', category: 'Pdf Tools', desc: 'I Edit PDF Online', color: 'bg-green-100', iconColor: 'text-green-600' },
-  { icon: <FileImage className="w-5 h-5" />, name: 'PDF to JPG', category: 'Pdf Tools', desc: 'Convert PDF to JPG and extract each page as an image', color: 'bg-blue-100', iconColor: 'text-blue-600' },
-  { icon: <Image className="w-5 h-5" />, name: 'JPG to PDF', category: 'Image Tools', desc: 'Upload images and receive as a PDF file', color: 'bg-red-100', iconColor: 'text-red-600' },
-  { icon: <Image className="w-5 h-5" />, name: 'Upscale Image', category: 'Image Tools', desc: 'Increase the resolution of your image', color: 'bg-blue-100', iconColor: 'text-blue-600' },
-  { icon: <Minimize2 className="w-5 h-5" />, name: 'Compress PDF', category: 'Pdf Tools', desc: 'Lessen the file size of a PDF file', color: 'bg-purple-100', iconColor: 'text-purple-600' },
-  { icon: <FileText className="w-5 h-5" />, name: 'Paragraph Completer', category: 'AI Write', desc: 'Paragraph Completer', color: 'bg-yellow-100', iconColor: 'text-yellow-600' },
-  { icon: <Video className="w-5 h-5" />, name: 'Trim Video', category: 'Video Tools', desc: 'Trim and cut video files', color: 'bg-pink-100', iconColor: 'text-pink-600' },
-  { icon: <Video className="w-5 h-5" />, name: 'Merge Video', category: 'Video Tools', desc: 'Merge multiple video files', color: 'bg-red-100', iconColor: 'text-red-600' },
-  { icon: <Video className="w-5 h-5" />, name: 'Video Converter', category: 'Converter Tools', desc: 'Convert video to different formats', color: 'bg-blue-100', iconColor: 'text-blue-600' },
-  { icon: <FileText className="w-5 h-5" />, name: 'Split PDF', category: 'Pdf Tools', desc: 'Split PDF into multiple files', color: 'bg-teal-100', iconColor: 'text-teal-600' },
-  { icon: <Folder className="w-5 h-5" />, name: 'File Converter', category: 'Converter Tools', desc: 'Convert files between formats', color: 'bg-gray-100', iconColor: 'text-gray-600' },
-  { icon: <Folder className="w-5 h-5" />, name: 'File Compressor', category: 'Other Tools', desc: 'Compress files to reduce size', color: 'bg-purple-100', iconColor: 'text-purple-600' }
+  // Image Tools
+  { 
+    icon: <Minimize2 className="w-5 h-5" />, 
+    name: 'Compress Image', 
+    category: 'Image Tools', 
+    desc: 'Compress images to reduce file size', 
+    color: 'bg-orange-100', 
+    iconColor: 'text-orange-600',
+    endpoint: '/api/image/compress',
+    toolType: 'image'
+  },
+  { 
+    icon: <Maximize2 className="w-5 h-5" />, 
+    name: 'Resize Image', 
+    category: 'Image Tools', 
+    desc: 'Resize images to any dimensions', 
+    color: 'bg-pink-100', 
+    iconColor: 'text-pink-600',
+    endpoint: '/api/image/resize',
+    toolType: 'image'
+  },
+  { 
+    icon: <Crop className="w-5 h-5" />, 
+    name: 'Crop Image', 
+    category: 'Image Tools', 
+    desc: 'Crop images to your desired size', 
+    color: 'bg-green-100', 
+    iconColor: 'text-green-600',
+    endpoint: '/api/image/crop',
+    toolType: 'image'
+  },
+  { 
+    icon: <FilePlus className="w-5 h-5" />, 
+    name: 'JPG to Word', 
+    category: 'Image Tools', 
+    desc: 'Convert JPG images to Word documents', 
+    color: 'bg-blue-100', 
+    iconColor: 'text-blue-600',
+    endpoint: '/api/image/jpg-to-word',
+    toolType: 'image'
+  },
+  { 
+    icon: <Type className="w-5 h-5" />, 
+    name: 'Image Text Converter', 
+    category: 'Image Tools', 
+    desc: 'Extract text from images using OCR', 
+    color: 'bg-indigo-100', 
+    iconColor: 'text-indigo-600',
+    endpoint: '/api/image/image-text-converter',
+    toolType: 'image'
+  },
+  { 
+    icon: <Hash className="w-5 h-5" />, 
+    name: 'Word Counter', 
+    category: 'Image Tools', 
+    desc: 'Count words in image text', 
+    color: 'bg-purple-100', 
+    iconColor: 'text-purple-600',
+    endpoint: '/api/image/word-counter',
+    toolType: 'image'
+  },
+  // PDF Tools
+  { 
+    icon: <FileImage className="w-5 h-5" />, 
+    name: 'PDF to JPG', 
+    category: 'Pdf Tools', 
+    desc: 'Convert PDF pages to JPG images', 
+    color: 'bg-blue-100', 
+    iconColor: 'text-blue-600',
+    endpoint: '/api/pdf/pdf-to-jpg',
+    toolType: 'pdf'
+  },
+  { 
+    icon: <Minimize2 className="w-5 h-5" />, 
+    name: 'Compress PDF', 
+    category: 'Pdf Tools', 
+    desc: 'Reduce PDF file size', 
+    color: 'bg-purple-100', 
+    iconColor: 'text-purple-600',
+    endpoint: '/api/pdf/compress',
+    toolType: 'pdf'
+  },
+  { 
+    icon: <Scissors className="w-5 h-5" />, 
+    name: 'Split PDF', 
+    category: 'Pdf Tools', 
+    desc: 'Split PDF into multiple files', 
+    color: 'bg-teal-100', 
+    iconColor: 'text-teal-600',
+    endpoint: '/api/pdf/split',
+    toolType: 'pdf'
+  },
+  { 
+    icon: <FileText className="w-5 h-5" />, 
+    name: 'PDF to Word', 
+    category: 'Pdf Tools', 
+    desc: 'Convert PDF to Word document', 
+    color: 'bg-green-100', 
+    iconColor: 'text-green-600',
+    endpoint: '/api/pdf/pdf-to-word',
+    toolType: 'pdf'
+  },
+  { 
+    icon: <Crop className="w-5 h-5" />, 
+    name: 'Crop PDF', 
+    category: 'Pdf Tools', 
+    desc: 'Crop PDF pages', 
+    color: 'bg-orange-100', 
+    iconColor: 'text-orange-600',
+    endpoint: '/api/pdf/crop',
+    toolType: 'pdf'
+  },
+  { 
+    icon: <FilePlus className="w-5 h-5" />, 
+    name: 'Word to PDF', 
+    category: 'Pdf Tools', 
+    desc: 'Convert Word documents to PDF', 
+    color: 'bg-red-100', 
+    iconColor: 'text-red-600',
+    endpoint: '/api/pdf/word-to-pdf',
+    toolType: 'pdf'
+  }
 ];
 
 // Helper function to generate tool slug from name
@@ -76,19 +173,9 @@ export const getToolsByNavCategory = (navCategory: string) => {
     case 'Image':
       categoryFilter = ['Image Tools'];
       break;
-    case 'Write':
-      categoryFilter = ['AI Write'];
-      break;
-    case 'Video':
-      categoryFilter = ['Video Tools'];
-      break;
-    case 'File':
-      categoryFilter = ['Other Tools', 'Converter Tools'];
-      break;
     default:
       return [];
   }
   
   return popularTools.filter(tool => categoryFilter.includes(tool.category));
 };
-
